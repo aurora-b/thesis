@@ -2,26 +2,42 @@
 x = -4:0.1:4; 
 len=length(x)
 y=tanh(x)
-plot(x,y);grid on
+%plot(x,y);grid on
 %%
 %perform a 2nd gen wavelet transform (in physical space)
-lsdb3 = liftwave('db3'); %lift wave
-displs(lsdb3); %see what the lifting scheme yields
-%use lwtcoef https://www.mathworks.com/help/wavelet/ref/lwtcoef.html
-% Perform LWT at level n
+lsdb3 = liftwave('db3'); %lift wavelet
+% Perform LWT at level 'lev'
 lev=3
-yDec = lwt(y,lsdb3,lev)
-%extract coefficients
-for k = 1:lev
-        d = lwtcoef('d',yDec,lsdb3,lev,k);
-        d = d(:)';
-        d = d(ones(1,2^k),:);
-        cfd(k,:) = wkeep1(d(:)',len);
-end
-cfd=cfd(:);
-% d1 = abs(lwtcoef('d',yDec,lsdb3,3,1))
-% d2= abs(lwtcoef('d',yDec,lsdb3,3,2))
-% d3= abs(lwtcoef('d',yDec,lsdb3,3,3))
+[cA1, cD1]=lwt(y,lsdb3,1)
+[cA2, cD2]=lwt(y,lsdb3,2)
+[cA3, cD3] =lwt(y,lsdb3,3)
+
 %%
 %perform thresholding
-e=1E-3
+e=1E-2
+I = find(abs(cD1)<e);
+cD1(I) = zeros(size(I));
+I2=find(abs(cD2)<e);
+cD2(I2)=zeros(size(I2));
+I3=find(abs(cD3)<e);
+cD3(I3)=zeros(size(I3));
+
+%%
+%reconstruct
+yRec1=ilwt(cA1,cD1,lsdb3)
+yRec2=ilwt(cA2,cD2,lsdb3,2)
+yRec3=ilwt(cA3,cD3,lsdb3,3)
+plot(yRec1) 
+hold on 
+plot(yRec2)
+plot(yRec3)
+grid on
+
+err1=max(max(abs(y-yRec1))) %Why are the errors the same
+err2=max(max(abs(y-yRec2)))
+err3=max(max(abs(y-yRec3)))
+
+
+
+
+
