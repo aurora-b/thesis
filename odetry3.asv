@@ -2,6 +2,7 @@
 tend=0.9;
 j=5;
 n=2^j; %grid points
+nn=
 b=2*pi; %length of x axis
 delx= b/n; %width of space stept
 

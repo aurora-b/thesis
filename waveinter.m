@@ -1,4 +1,8 @@
 function [A,D]= waveinter(y,m,e)
+if mod(length(y),2)~=0
+    msg = 'Error occurred. Length of initial function must be even.';
+    error(msg)
+end
 %A is the approximation, D is the detail, a3 is the coefficient of lifting
 %to preserve mean
 %m=order of interpolation
