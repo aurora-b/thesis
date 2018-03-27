@@ -1,7 +1,8 @@
 %Associated with function file 'ode45try2'
+clear
 tend=0.9;
-j=5;
-n=2^j; %grid points
+w=10;
+n=2^w; %grid points
 b=2*pi; %length of x axis
 delx= b/n; %width of space stept
 
@@ -17,14 +18,14 @@ end
 %%
 [t,u]=ode45(@ode45try2,0:delt:tend,uinit);
 
-j=length(u(:,1))
+w=length(u(:,1))
 % 
 % final = [u(j,:)]
 % middle = [u(j-10,:)]
 
 %%
 %Create a movie
-for time=1:j
+for time=1:w
     plot(x,u(time,:));
     title({['1-D Burgers'' equation (\nu = ',num2str(visc),')'];['time(\itt) = ',num2str(delt*time)]});
     grid on;
@@ -41,14 +42,14 @@ end
 % close(v)
 %%
 %Display just a final plot
-plot(x/pi,u(j,:))
+plot(x/pi,u(w,:))
 grid on;
 axis([0 2 -1.5 1.5])
 xlabel('x/pi')
 ylabel('u(x)')
 %%
 %plot with x=pi line
-h = plot(x,u(j,:)); grid on; axis([0 2*pi -1.5 1.5])
+h = plot(x,u(w,:)); grid on; axis([0 2*pi -1.5 1.5])
 hold on
 piy=[-1.5 1.5]
 pix= [pi pi]

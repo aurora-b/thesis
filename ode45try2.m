@@ -1,6 +1,6 @@
 function udot=ode45try2(t,u)
 
-n=32; %grid points
+n=2^10; %grid points
 b=2*pi; %length of x axis
 delx= b/n; %width of space step
 visc=delx^2/8; %viscosity coefficient

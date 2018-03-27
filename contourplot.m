@@ -1,4 +1,4 @@
-for n=1:j
+for n=1:w
 s = [u(n,:)]; 
 len = length(s); %number of grid points
 
