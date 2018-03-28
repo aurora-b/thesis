@@ -1,10 +1,7 @@
 %% ALL THIS CODE FOLLOWS FROM THE WORK DONE ON PURPLE PAPER ON 22 MARCH
-%This doesn't implement solving on the adaptive grid, but shows where the
+%This doesn't inplement solving on the adaptive grid, but shows where the
 %adaptive grid should be based on active wavelets/perfect
 %reconstruction/security zone
-
-%this utilizes the odetry3 function. the odetry3 file must be run before
-%running this file
 
 %w=length(u(:,1));
 %n=1

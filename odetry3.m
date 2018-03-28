@@ -1,13 +1,15 @@
 %Associated with function file 'ode45try2'
 clear
 tend=0.9;
-w=10;
-n=2^w; %grid points
+g=9;
+n=2^g; %grid points
 b=2*pi; %length of x axis
 delx= b/n; %width of space stept
 
 delt=0.1*delx;
-visc=delx^2/8
+%visc=delx^2/8
+visc=delx^1.2
+
 
 x= 0:delx:b-delx; %adds delx each time and specifies grid points
 uinit=zeros(1,n); %preallocating u
