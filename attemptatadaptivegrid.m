@@ -6,7 +6,7 @@
 %% To setup this function, either run the odetry3 function, or run the below chunk.
 %This chunk will reference ode45try2 and the rk4 function
 clear
-tend=6;
+tend=6.1;
 g=9;
 n=2^g; %grid points
 b=2*pi; %length of x axis
@@ -36,7 +36,7 @@ for i=2:lev
      Ex = App(i-1,1:(len)/(2^(i-1)));
     [App(i,1:((len/(2^i)))),Dt(i,1:(len/(2^i)))] = waveinter(Ex, 1,0);
 end
-[App, Dt, y1]=activegrid(App,Dt, u(1,:), eps, lev);
+[App, Dt]=activegrid(App,Dt, u(1,:), eps, lev);
 
 %NOW we have data structures containing all the significant grid points
 %based on the significant wavelet coefficients, the perfect reconstruction
@@ -47,7 +47,7 @@ end
 %Restructure data structures so they are all 'len' in length
 Dt1=zeros(lev,len);
 App1=zeros(lev,len);
-acgrid=zeros(lev+1,len);
+acgrid=zeros(lev,len);
 for i=1:lev
     x=Dt(i,1:len/(2^i));
     Dt1(i,(2^i):(2^i):end)=x;
@@ -55,7 +55,7 @@ for i=1:lev
     App1(i,2^(i-1):(2^i):end)=x1;
     acgrid(i+1,:)=Dt1(i,:)+App1(i,:);
 end
-acgrid(1,:)=y1
+%acgrid(1,:)=y1;
 %we now have an active grid structure. the first level is the finest level,
 %and the next levels down go coarser and coarser
 
@@ -80,7 +80,7 @@ set(gca, 'XTick', [0:0.1:1]*len, 'XTickLabel', [0:0.1:1]*2)
 hold off;
 mov(n)=getframe(figure(1));
 end
-vv = VideoWriter('activegrid_delt0.1timesdelx_gridpoints2power9_viscdelxpowerof1.2.avi');
+vv = VideoWriter('activegrid_delt0.1timesdelx_gridpoints2power9_viscdelxpowerof1.2run2.avi');
 vv.FrameRate = 110;  % Default 30
 vv.Quality = 100;    % Default 75
 open(vv)

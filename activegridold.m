@@ -1,30 +1,15 @@
-%% ALL THIS CODE FOLLOWS FROM THE WORK DONE ON PURPLE PAPER ON 22 MARCH
-%This doesn't inplement solving on the adaptive grid, but shows where the
-%adaptive grid should be based on active wavelets/perfect
-%reconstruction/security zone
+function [App, Dt]=activegrid(App, Dt, s, eps, lev)
+%This function spits out the Dt, App, and y1 (finest resolution) structures
+%for the active grid of a function with certain threshold on the wavelets.
 
-%w=length(u(:,1));
-%n=1
-for n=1:w
-s = [u(n,:)]; 
-len = length(s); %number of grid points
-j=5; %make sure to change this in the file too. this should be such that 2^(j-1) = len
+%THIS IS THE OLD CODE FOR ACTIVE GRID BEFORE THE RESTRUCTURING ON 30/31
+%MARCH
 
-lev   = 8;
-nbcol = 100;
-App=zeros(lev, (length(s))/2); 
-Dt=zeros(lev,[length(s)]/2);  
-eps=5E-3;
 
-%perform decomposition
-[App(1,1:len/2),Dt(1,1:len/2)]=waveinter(s,1,0);
-
-for i=2:lev
-     Ex = App(i-1,1:(len)/(2^(i-1)));
-    [App(i,1:((len/(2^i)))),Dt(i,1:(len/(2^i)))] = waveinter(Ex, 1,0);
-end
+j=log2(length(s));
 I2=find(abs(Dt')>eps); %finds points on the grid which are currently above the threshold. counts down column usually, but we want it to count down row.
 
+len=length(App(1,:))*2;
 %Now we need to find grid points which are adjacent in both scale and
 %space. This is step 1 in Rong
 
@@ -123,14 +108,15 @@ if ismember(k,I2)==1 %if we are in the I2 matrix
             I5(length(I5)+1)=k-(len/2)+m;
             I5(length(I5)+1)=k-(len/2)-m+1;
         end  
-        if row==1 && m==len/2 %if the last wavelet at the first level of decomposition, we take the first and last pt at highest level of decomp
-            I6(length(I6)+1)=len;
-            I6(length(I6)+1)=1;
-        end
-        if row==1 && m~=len/2 %if on the first level of decomposition and not a centre wavelet
-            I6(length(I6)+1)=2*m-1;
-            I6(length(I6)+1)=2*m+1;
-        end
+%         if row==1 && m==len/2 %if the last wavelet at the first level of decomposition, we take the first and last pt at highest level of decomp
+%             I6(length(I6)+1)=len;
+%             I6(length(I6)+1)=1; WE DON'T NEED TO DO THIS STEP. SEE THE
+%             STAR NOTE ON THE BACK OF THE 25/26 MARCH PAGE
+%         end
+%         if row==1 && m~=len/2 %if on the first level of decomposition and not a centre wavelet
+%             I6(length(I6)+1)=2*m-1;
+%             I6(length(I6)+1)=2*m+1;
+%         end
     end
 end
 %Remember, we have to transpose it because we counted the transposed way. 
@@ -149,63 +135,13 @@ App=C';
 
 %make everything in the finest level 0 unless it is in the perfect
 %reconstruction zone
-I8=0;
-for v=1:len
-    if ismember(v,I6)==0
-        I8(length(I8)+1)=v;
-    end
+% I8=0; %SEE THE STAR ON THE BACK OF THE 25/26 MARCH PAPER
+% for v=1:len
+%     if ismember(v,I6)==0
+%         I8(length(I8)+1)=v;
+%     end
+% end
+% I8=I8(2:end);
+% y1=s; %for now, we aren't going to throw away the whole solution
+% y1(I8)=zeros(size(I8));
 end
-I8=I8(2:end);
-y1=s; %for now, we aren't going to throw away the whole solution
-y1(I8)=zeros(size(I8));
-
-%NOW we have data structures containing all the significant grid points
-%based on the significant wavelet coefficients, the perfect reconstruction
-%zone, and the coarsest level of scaling function decomposition
-
-%Restructure data structures so they are all 'len' in length
-
-%Do it for the wavelet points first.
-Dt1=zeros(lev,len);
-App1=zeros(lev,len);
-for i=1:lev
-    x=Dt(i,1:len/(2^i));
-    Dt1(i,(2^i):(2^i):end)=x;
-end
-%do it for the scaling function points.
-for i=1:lev
-    x=App(i,1:len/(2^i));
-    App1(i,2^(i-1):(2^i):end)=x;
-end
-
-%now we sum all of these together to see where we have points that aren't 0
-%(i.e. where we should preserve the grid points)
-agrid=sum(Dt1,1)+sum(App1,1)+y1;
-
-% This chunk plots the active grid on the x axis
-J=find(abs(agrid==0));
-agrid(J)=NaN(size(J)); %set things below threshold to NaN so they don't plot
-
-J1=find(abs(agrid)>=0);
-agrid(J1)=-ones(size(J1));
-
-%END of the chunk which plots the active grid on the x axis
-figure(1)
-plot(s);
-hold on;
-plot(agrid,'.','MarkerSize', 10);
-axis([0 len -1 1])
-set(gca, 'XTick', [0:0.1:1]*len, 'XTickLabel', [0:0.1:1]*2)
-hold off;
-mov(n)=getframe(figure(1));
-end
-vv = VideoWriter('activegrid_delt0.1timesdelx_gridpoints2power9_viscdelxpowerof1.2.avi');
-vv.FrameRate = 110;  % Default 30
-vv.Quality = 100;    % Default 75
-open(vv)
-writeVideo(vv,mov)
-close(vv)  
-
-
-
-  

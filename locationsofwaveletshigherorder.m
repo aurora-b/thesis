@@ -1,6 +1,6 @@
 clear
-n=8; %number of levels of resolution analyzed. 
-j=11; %keep j>n. determines length signal
+n=5; %number of levels of resolution analyzed. 
+j=7; %keep j>n. determines length signal
 %Max resolution level that this code works for is for where
 %(length(x))/(2^n) is still an integer (for even lengtheds things)
 xend=4;
@@ -78,14 +78,11 @@ Dt(I2)=zeros(size(I2)); %set things above the threshold to 0 so the points plot 
 % xbeg=-4-2^(-n)%need to start so the first wavelet is shifted off by one step at the highest scale of resolution
 store=zeros(n,len/2)
 
-stepup(1)=0;
+
 for i=1:n
 yyaxis right
-stepup(i+1)=stepup(i)+2^(i-1); %this is because the starting position of each wavelet should be step size* 1, then *3, then *5, then *15 etc. look at 22 March papers
-xodd=linspace(xbeg+((xend-xbeg)/[2^(j)-1])*(stepup(i+1)),xend,len/(2^i));%((xend-xbeg)/[2^(j)-1]) is the step size on the finest grid. (see 22 march page 2)
-%xodd=linspace(xbeg+((xend-xbeg)/2^(j))*(2^(i)),xend,len/(2^i));
-%xodd=linspace(xbeg,xend,len/2^i))
-plot(xodd, (n-i) + 1 + Dt(i,1:((len/2^i))),'.','MarkerSize', 10) %plots show where wavelets are preserved at each resolution number
+xodd=linspace(xbeg+((xend-xbeg)/[2^(j)-1])*(2^(i-1)),xend-((xend-xbeg)/[2^(j)-1])*(2^(i-1)-1),len/(2^i));%((xend-xbeg)/[2^(j)-1]) is the step size on the finest grid. (see 22 march page 2)
+plot(xodd, (n-i) + 1 + Dt(i,1:((len/2^i))),'x','MarkerSize', 10) %plots show where wavelets are preserved at each resolution number
 hold on;
 ylabel('Resolution Level')
 yticks([linspace(1,n,n)]);
