@@ -1,3 +1,22 @@
+%Second Generation Wavelets. Mapping the contour plot. 
+%% This chunk sets up u
+clear
+tend=6.1;
+g=10;
+n=2^g; %grid points
+b=2*pi; %length of x axis
+delx= b/n; %width of space step
+delt=0.5*delx;
+w=length(0:delt:tend);
+visc=delx^1.2
+x= 0:delx:b-delx; %adds delx each time and specifies grid points
+uinit=zeros(1,n); %preallocating u
+for i=1:n
+    uinit(i)= sin(x(i));
+end
+[t,u]=rk4(@ode45try2,0, tend, uinit, w); 
+
+%% This chunk runs the contour plot stuff
 for n=1:w
 s = [u(n,:)]; 
 len = length(s); %number of grid points
@@ -72,9 +91,9 @@ mov(n)=getframe(figure(1));
 
 end
 
-% v = VideoWriter('contourn2002bw.avi');
-% v.FrameRate = 110;  % Default 30
-% v.Quality = 100;    % Default 75
-% open(v)
-% writeVideo(v,mov)
-% close(v)    
+v = VideoWriter('contourpresentation.avi');
+v.FrameRate = 110;  % Default 30
+v.Quality = 100;    % Default 75
+open(v)
+writeVideo(v,mov)
+close(v)    

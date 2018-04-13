@@ -1,6 +1,6 @@
 clear
 n=5; %number of levels of resolution analyzed. 
-j=7; %keep j>n. determines length signal
+j=8; %keep j>n. determines length signal
 %Max resolution level that this code works for is for where
 %(length(x))/(2^n) is still an integer (for even lengtheds things)
 xend=4;
@@ -31,7 +31,7 @@ nbcol=100;
 len=length(x); 
 App=zeros(n, (length(x))/2); 
 Dt=zeros(n,[length(x)]/2); 
-e=0
+e=0.0001
 m=1
 
 [App(1,:),Dt(1,:)]=waveinter(y,m,0); %first decomposition

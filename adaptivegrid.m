@@ -31,7 +31,7 @@ for i=2:lev
      Ex = App(i-1,1:(len)/(2^(i-1)));
     [App(i,1:((len/(2^i)))),Dt(i,1:(len/(2^i)))] = waveinter(Ex, 1,0);
 end
-[App,Dt,y1]=activegrid(App,Dt, uinit, eps, lev);
+[App,Dt]=activegrid(App,Dt, eps, lev);
 
 %% Find the active grid at EACH level.
 %Restructure data structures so they are all 'len' in length
@@ -45,16 +45,65 @@ for i=1:lev
     App1(i,2^(i-1):(2^i):end)=x1;
     acgrid(i+1,:)=Dt1(i,:)+App1(i,:);
 end
-acgrid(1,:)=y1
+%acgrid(1,:)=y1
 %we now have an active grid structure. the first level is the finest level,
 %and the next levels down go coarser and coarser
 
-%%
-
-
-
-
-
-
-
-[t,u]=rk4(@ode45try2,0, delt, uinit, 1); %1 time step from 0 to delt
+%% applying the numerical solution on the adaptive grid
+% for i=1:lev
+%    if i=1
+%        yt=waveinterinv(App(1,:),Dt(1,:),1)
+%        I3=0; %initialize a vector
+%        I1=find(abs(Dt(1,:)>0);
+%        I2=find(abs(App(1,:)>0); %find where the points are that weren't set to 0
+%        for k=1:len/2
+%        if ismember(k,I1)==1 %adding in neighbours of any significant wavelet point
+%            I2(length(I2)+1)=k;
+%            if k=len/2
+%                 I2(length(I2)+1)=1
+%            else
+%                I2(length(I2)+1)=k+1
+%            end
+%        end
+%        if ismember(k,I2)==1 %adding in neighbours of the scaling function points that we want to keep at each level
+%            I1(length(I1)+1)=k;
+%            if k=1
+%                I1(length(I2)+1)=len/2
+%            else
+%                I1(length(I2)+1)=k-1
+%            end
+%        end
+%        %now, we need to put this as a vector combined (find where on yt, we
+%        %want to keep pts)
+%        for ismember(k,I2)==1
+%            I3(length(I3)+1)=2*k-1;
+%        end
+%        for ismember(k,I1)==1
+%            I3(length(I3)+1)=2*k;
+%        end
+%        end 
+%        %find consecutive chunks
+%        I3=I3(2:end); %cut out the initialize value 0
+%        I4=find(diff(I3)~=1) %if a value in this vector after 1 is n, then take 1:n as a vector
+%        
+%        
+%        
+%    end
+%     
+%     
+%     
+%     
+% end
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% %%
+% [t,u]=rk4(@ode45try2,0, delt, uinit, 1); %1 time step from 0 to delt

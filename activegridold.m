@@ -1,4 +1,4 @@
-function [App, Dt]=activegrid(App, Dt, s, eps, lev)
+function [App, Dt]=activegridold(App, Dt, s, eps, lev)
 %This function spits out the Dt, App, and y1 (finest resolution) structures
 %for the active grid of a function with certain threshold on the wavelets.
 

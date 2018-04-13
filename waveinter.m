@@ -1,3 +1,4 @@
+
 function [A,D]= waveinter(y,m,e)
 if mod(length(y),2)~=0
     msg = 'Error occurred. Length of initial function must be even.';
