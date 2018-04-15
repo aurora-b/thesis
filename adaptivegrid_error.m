@@ -25,7 +25,7 @@ for p=1:w
     uexact(p+1,:)=thing(2,:);
 end
 %%
-s = [uinit]; 
+ss = [uinit]; 
 len = length(s); %number of grid points
 lev   = 8;
 yfd=zeros(lev,len,w+1);
@@ -34,12 +34,12 @@ b=20
 error=ones(1,b)
 
 for d=1:b
-App=zeros(lev, (length(s))/2); 
-Dt=zeros(lev,[length(s)]/2);  
+App=zeros(lev, (length(ss))/2); 
+Dt=zeros(lev,[length(ss)]/2);  
 %eps=0.002;
-eps=d*(10^(-3));
+eps=d*(5^(-3));
 %perform decomposition
-[App(1,1:len/2),Dt(1,1:len/2)]=waveinter(s,1,0);
+[App(1,1:len/2),Dt(1,1:len/2)]=waveinter(ss,1,0);
 for i=2:lev
      Ex = App(i-1,1:(len)/(2^(i-1)));
     [App(i,1:((len/(2^i)))),Dt(i,1:(len/(2^i)))] = waveinter(Ex, 1,0);
@@ -127,14 +127,14 @@ end
  %zeroes out the non significant points
 
 
-agrid=sum(tr,1);
-
-% This chunk plots the active grid on the x axis
-J=find(abs(agrid==0));
-agrid(J)=NaN(size(J)); %set things below threshold to NaN so they don't plot
-J1=find(abs(agrid)>=0);
-agrid(J1)=-ones(size(J1));
-numpres=length(J1)
+% agrid=sum(tr,1);
+% 
+% % This chunk plots the active grid on the x axis
+% J=find(abs(agrid==0));
+% agrid(J)=NaN(size(J)); %set things below threshold to NaN so they don't plot
+% J1=find(abs(agrid)>=0);
+% agrid(J1)=-ones(size(J1));
+% numpres=length(J1)
 
 err(p)=norm(y-uexact(p+1,:),2);
 end
