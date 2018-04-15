@@ -140,3 +140,7 @@ err(p)=norm(y-uexact(p+1,:),2);
 end
 error(d)=max(err);
 end
+epsilon=ones(1,b);
+for d=1:b
+    epsilon(d)=d*(5^(-3));
+end
