@@ -3,10 +3,9 @@ function udot=rk4setup(t,u,len,m)
 %m is the row we are on.
 nn=len/(2^(m-1));
 b=2*pi; %length of x axis
-%delx= b/n; %width of space step
-delx=1;
-visc=delx^1.2; %viscosity coefficient
-%visc=delx^2/8
+delx= b/nn; %width of space step
+%visc=delx^1.2; %viscosity coefficient
+visc=(0.0123^2)/8;
 for i=1:nn
     if i==1
 %         udot(i,1)= -u(1) * (u(2)-u(n))/(2*delx) + visc * (u(2)-2*u(1)+u(n))/delx^2;

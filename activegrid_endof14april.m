@@ -2,13 +2,13 @@
 %% This code provides a way to create an adaptive grid! yay. this code depends on activegridcalc.m (which depends on activegrid.m), rk4setup.m, rk4try2.m, waveinter.m and waveinterinv.m
 clear
 %tend=500;
-tend=20;
-g=6;
+g=8;
 n=2^g; %grid points
 b=2*pi; %length of x axis
 delx= b/n; %width of space step
 %delt=200*delx;
-delt=10
+delt=0.1*delx;
+tend=delt;
 w=length(0:delt:tend);
 visc=delx^2/8;
 x= 0:delx:b-delx; %adds delx each time and specifies grid points
@@ -19,12 +19,12 @@ end
 %%
 s = [uinit]; 
 len = length(s); %number of grid points
-lev   = 3;
+lev   = 7;
 yfd=zeros(lev,len,w+1);
-for p=1:w
+
 App=zeros(lev, (length(s))/2); 
 Dt=zeros(lev,[length(s)]/2);  
-eps=0;
+eps=0.1;
 %perform decomposition
 [App(1,1:len/2),Dt(1,1:len/2)]=waveinter(s,1,0);
 for i=2:lev
@@ -43,9 +43,10 @@ for r=1:lev
 yfd(r,1:(2^(r-1)):end,1)=yt(r,1:len/(2^(r-1)));
 end
 
+for p=1:w 
 [t,thing]=rk4try2(@rk4setup,delt*(p-1), delt*p, yfd(1,:,p), 1,len,1); %go up one time step only and on the highest level
 yfd(1,:,p+1)=thing(2,:); %found the next time step at the finest level
-yfd(1,:,p+1)=yfd(1,:,p+1).*tr(1,:); %zeroes out the non significant points
+%yfd(1,:,p+1)=yfd(1,:,p+1).*tr(1,:);
 
 
 
@@ -70,16 +71,15 @@ if length(find(QQ~=0))==length(find(tr(r,:)==1)) %if every significant value on 
 I3=find(QQ~=0); %find indices where there are levels above with significant pts
 for k=1:len
 if ismember(k,I3)==1
-    yfd(r,k,p)=yfd(QQ(k),k,p); %replace those points with the solution at the finer level
+    yfd(r,k,p+1)=yfd(QQ(k),k,p+1); %replace those points with the solution at the finer level
 end
 end
-yfd(r,:,p)=yfd(r,:,p).*tr(r,:); %zeroes out the non significant points
 
 else
 %calculate finite-volume/finite-difference scheme on row r
 [t,thing]=rk4try2(@rk4setup,delt*(p-1), delt*p, yfd(r,1:(2^(r-1)):end,p), 1,len,r); %go up one time step only and on the highest level
 yfd(r,1:(2^(r-1)):end,p+1)=thing(2,:); %found the next time step at the finest level
-yfd(r,:,p+1)=yfd(r,:,p+1).*tr(r,:); %zeroes out the non significant points
+%yfd(r,:,p+1)=yfd(r,:,p+1).*tr(r,:); %zeroes out the non significant points
 
 %but if there are any values on finer levels, we need to replace them
 %because that will make this more accurate
@@ -91,24 +91,42 @@ end
 end
 end
 end
-end
-
-
-
-y=yfd(1,:,p); %start with finest level
+%yfd(:,:,p+1)=yfd(:,:,p+1).*tr(:,:);
+y=yfd(1,:,p+1); %start with finest level
 %if any other level in a certain place isn't NaN, fill in that value
 for k=1:len
 for r=2:lev
 if isnan(y(k))
-    y(k)=yfd(r,k,p);
+    y(k)=yfd(r,k,p+1);
 end  
 end
 end
 s=y;
+App=zeros(lev, (length(s))/2); 
+Dt=zeros(lev,[length(s)]/2);  
+%perform decomposition
+[App(1,1:len/2),Dt(1,1:len/2)]=waveinter(s,1,0);
+for i=2:lev
+     Ex = App(i-1,1:(len)/(2^(i-1)));
+    [App(i,1:((len/(2^i)))),Dt(i,1:(len/(2^i)))] = waveinter(Ex, 1,0);
+end
+[App, Dt,tr]=activegridcalc(App, Dt, eps, lev);%get the app and dt matrices that we can perform finite difference on. also get the tracker matrix
+ %zeroes out the non significant points
+end
 
 
+% 
+% y2=yfd2(1,:,p+1); %start with finest level
+% %if any other level in a certain place isn't NaN, fill in that value
+% for k=1:len
+% for r=2:lev
+% if isnan(y2(k))
+%     y2(k)=yfd2(r,k,p+1);
+% end  
+% end
+% end
 
 
 %plot it even though it has NaN in it
-% I = ~isnan(y);
-% plot(x(I),y(I))
+I = ~isnan(y);
+plot(x(I),y(I))

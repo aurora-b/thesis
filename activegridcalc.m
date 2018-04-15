@@ -17,8 +17,9 @@ for i=1:lev
 end
 I=find(abs(tr)>0);
 I2=find(abs(tr)==0);
-tr(I2)=NaN(size(I2));
+%tr(I2)=NaN(size(I2));
+tr(I2)=zeros(size(I2));
 tr(I)=ones(size(I));
-App;
-D=Dt;
+App=A;
+Dt=D;
 end

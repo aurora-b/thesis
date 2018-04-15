@@ -1,6 +1,6 @@
 clear
-n=5; %number of levels of resolution analyzed. 
-j=8; %keep j>n. determines length signal
+n=14; %number of levels of resolution analyzed. 
+j=16; %keep j>n. determines length signal
 %Max resolution level that this code works for is for where
 %(length(x))/(2^n) is still an integer (for even lengtheds things)
 xend=4;
@@ -8,13 +8,13 @@ xbeg=-4;
 lenneeded =length(xbeg:(xend-xbeg +(1/2^(j)))/(2^(j)):xend); %having it go up by (xend-xbeg/(2^n)) ensures that length(x)/(2^n) is an integer
 x=linspace(xbeg,xend,lenneeded);
 % 
-x1=linspace(xbeg,xend,lenneeded/2)
-y1=tanh(x1);
-y2=-tanh(x1);
-y=[y1 y2];
+%x1=linspace(xbeg,xend,lenneeded/2);
+%y1=tanh(x1);
+%y2=-tanh(x1);
+%y=[y1 y2];
 
 nbcol=100;
-%y= gaussmf(x,[0.5 0]);
+y= gaussmf(x,[0.5 0]);
 %y=zeros(1,length(x));
 
 %%
@@ -31,7 +31,7 @@ nbcol=100;
 len=length(x); 
 App=zeros(n, (length(x))/2); 
 Dt=zeros(n,[length(x)]/2); 
-e=0.0001
+e=(10^(-4))
 m=1
 
 [App(1,:),Dt(1,:)]=waveinter(y,m,0); %first decomposition
@@ -82,7 +82,7 @@ store=zeros(n,len/2)
 for i=1:n
 yyaxis right
 xodd=linspace(xbeg+((xend-xbeg)/[2^(j)-1])*(2^(i-1)),xend-((xend-xbeg)/[2^(j)-1])*(2^(i-1)-1),len/(2^i));%((xend-xbeg)/[2^(j)-1]) is the step size on the finest grid. (see 22 march page 2)
-plot(xodd, (n-i) + 1 + Dt(i,1:((len/2^i))),'x','MarkerSize', 10) %plots show where wavelets are preserved at each resolution number
+plot(xodd, (n-i) + 1 + Dt(i,1:((len/2^i))),'.','MarkerSize', 10) %plots show where wavelets are preserved at each resolution number
 hold on;
 ylabel('Resolution Level')
 yticks([linspace(1,n,n)]);

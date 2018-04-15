@@ -10,12 +10,12 @@
 %parameters that work for step by step. 500 time, delt=10*delx,
 %visc=delx^2/8. but maybe choose more carefully based on cfl etc.
 clear
-tend=500;
+tend=5;
 g=9;
 n=2^g; %grid points
 b=2*pi; %length of x axis
 delx= b/n; %width of space step
-delt=10*delx;
+delt=0.5*delx;
 w=length(0:delt:tend);
 visc=delx^2/8
 x= 0:delx:b-delx; %adds delx each time and specifies grid points

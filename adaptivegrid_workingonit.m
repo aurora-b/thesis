@@ -2,13 +2,13 @@
 %% This code provides a way to create an adaptive grid! yay. this code depends on activegridcalc.m (which depends on activegrid.m), rk4setup.m, rk4try2.m, waveinter.m and waveinterinv.m
 clear
 %tend=500;
-tend=20;
-g=6;
+tend=1;
+g=7;
 n=2^g; %grid points
 b=2*pi; %length of x axis
 delx= b/n; %width of space step
 %delt=200*delx;
-delt=10
+delt=0.1*delx
 w=length(0:delt:tend);
 visc=delx^2/8;
 x= 0:delx:b-delx; %adds delx each time and specifies grid points
@@ -19,12 +19,12 @@ end
 %%
 s = [uinit]; 
 len = length(s); %number of grid points
-lev   = 3;
+lev   = 5;
 yfd=zeros(lev,len,w+1);
-for p=1:w
+
 App=zeros(lev, (length(s))/2); 
 Dt=zeros(lev,[length(s)]/2);  
-eps=0;
+eps=0.001;
 %perform decomposition
 [App(1,1:len/2),Dt(1,1:len/2)]=waveinter(s,1,0);
 for i=2:lev
@@ -43,6 +43,7 @@ for r=1:lev
 yfd(r,1:(2^(r-1)):end,1)=yt(r,1:len/(2^(r-1)));
 end
 
+for p=1:w
 [t,thing]=rk4try2(@rk4setup,delt*(p-1), delt*p, yfd(1,:,p), 1,len,1); %go up one time step only and on the highest level
 yfd(1,:,p+1)=thing(2,:); %found the next time step at the finest level
 yfd(1,:,p+1)=yfd(1,:,p+1).*tr(1,:); %zeroes out the non significant points
@@ -104,11 +105,11 @@ if isnan(y(k))
 end  
 end
 end
-s=y;
+
 
 
 
 
 %plot it even though it has NaN in it
-% I = ~isnan(y);
-% plot(x(I),y(I))
+I = ~isnan(y);
+plot(x(I),y(I))

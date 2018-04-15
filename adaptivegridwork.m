@@ -1,4 +1,5 @@
-%% WE ADD IN GRID POINTS ABOVE ACTIVE WAVELETS. SHOULD WE?
+%% This is an older version that doesn't bump up one time step, because we're always taking s to be the initial condition
+%WE ADD IN GRID POINTS ABOVE ACTIVE WAVELETS. SHOULD WE?
 clear
 tend=6.1;
 g=9;
@@ -20,7 +21,7 @@ len = length(s); %number of grid points
 lev   = 8;
 App=zeros(lev, (length(s))/2); 
 Dt=zeros(lev,[length(s)]/2);  
-eps=0.00003;
+eps=0;
 yfd=zeros(lev,len,w);
 %perform decomposition
 [App(1,1:len/2),Dt(1,1:len/2)]=waveinter(s,1,0);
